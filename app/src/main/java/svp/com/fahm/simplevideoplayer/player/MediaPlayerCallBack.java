@@ -24,7 +24,7 @@ import java.lang.annotation.RetentionPolicy;
  * Created by Faheem on 20/12/17.
  */
 
-public interface AudioPlayerCallBack {
+public interface MediaPlayerCallBack {
 
     @IntDef({State.INVALID, State.PLAYING, State.PAUSED, State.STOP , State.RESET, State.COMPLETED})
     @Retention(RetentionPolicy.SOURCE)
@@ -47,5 +47,6 @@ public interface AudioPlayerCallBack {
     void onStateChanged(@State int state);
 
     void onPlaybackCompleted();
+    void onSurfaceCreated();
 
 }

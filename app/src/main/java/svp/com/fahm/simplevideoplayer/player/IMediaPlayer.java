@@ -29,4 +29,5 @@ public interface IMediaPlayer {
     void pause();
     void initializeProgressCallback();
     void seekTo(int position);
+    //void onSurfaceChanged();
 }

@@ -30,18 +30,18 @@ import sap.com.fahm.simpleaudioplayer.MainActivity;
  * Created by Faheem on 20/12/17.
  */
 
-public class AudioPlayerManager implements IAudioPlayer {
+public class VideoPlayerManager implements IMediaPlayer {
 
     public static final int PLAYBACK_POSITION_REFRESH_INTERVAL_MS = 1000;
 
     private final Context mContext;
     private MediaPlayer mMediaPlayer;
     private int mResourceId;
-    private AudioPlayerCallBack mAudioPlaybackListner;
+    private MediaPlayerCallBack mediaPlayerCallBack;
     private ScheduledExecutorService mExecutor;
     private Runnable mSeekbarPositionUpdateTask;
 
-    public AudioPlayerManager(Context context) {
+    public VideoPlayerManager(Context context) {
         mContext = context.getApplicationContext();
     }
 
@@ -60,9 +60,9 @@ public class AudioPlayerManager implements IAudioPlayer {
                 public void onCompletion(MediaPlayer mediaPlayer) {
                     stopUpdatingCallbackWithPosition(true);
                     logToUI("MediaPlayer playback completed");
-                    if (mAudioPlaybackListner != null) {
-                        mAudioPlaybackListner.onStateChanged(AudioPlayerCallBack.State.COMPLETED);
-                        mAudioPlaybackListner.onPlaybackCompleted();
+                    if (mediaPlayerCallBack != null) {
+                        mediaPlayerCallBack.onStateChanged(MediaPlayerCallBack.State.COMPLETED);
+                        mediaPlayerCallBack.onPlaybackCompleted();
                     }
                 }
             });
@@ -70,8 +70,8 @@ public class AudioPlayerManager implements IAudioPlayer {
         }
     }
 
-    public void setPlaybackInfoListener(AudioPlayerCallBack listener) {
-        mAudioPlaybackListner = listener;
+    public void setPlaybackInfoListener(MediaPlayerCallBack listener) {
+        mediaPlayerCallBack = listener;
     }
 
 
@@ -126,8 +126,8 @@ public class AudioPlayerManager implements IAudioPlayer {
             logToUI(String.format("playbackStart() %s",
                     mContext.getResources().getResourceEntryName(mResourceId)));
             mMediaPlayer.start();
-            if (mAudioPlaybackListner != null) {
-                mAudioPlaybackListner.onStateChanged(AudioPlayerCallBack.State.PLAYING);
+            if (mediaPlayerCallBack != null) {
+                mediaPlayerCallBack.onStateChanged(MediaPlayerCallBack.State.PLAYING);
             }
             startUpdatingCallbackWithPosition();
         }
@@ -139,8 +139,8 @@ public class AudioPlayerManager implements IAudioPlayer {
             logToUI("playbackStop()");
             mMediaPlayer.stop();
             loadMedia(mResourceId);
-            if (mAudioPlaybackListner != null) {
-                mAudioPlaybackListner.onStateChanged(AudioPlayerCallBack.State.RESET);
+            if (mediaPlayerCallBack != null) {
+                mediaPlayerCallBack.onStateChanged(MediaPlayerCallBack.State.RESET);
             }
             stopUpdatingCallbackWithPosition(true);
         }
@@ -152,8 +152,8 @@ public class AudioPlayerManager implements IAudioPlayer {
             logToUI("playbackReset()");
             mMediaPlayer.reset();
             loadMedia(mResourceId);
-            if (mAudioPlaybackListner != null) {
-                mAudioPlaybackListner.onStateChanged(AudioPlayerCallBack.State.RESET);
+            if (mediaPlayerCallBack != null) {
+                mediaPlayerCallBack.onStateChanged(MediaPlayerCallBack.State.RESET);
             }
             stopUpdatingCallbackWithPosition(true);
         }
@@ -163,8 +163,8 @@ public class AudioPlayerManager implements IAudioPlayer {
     public void pause() {
         if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
             mMediaPlayer.pause();
-            if (mAudioPlaybackListner != null) {
-                mAudioPlaybackListner.onStateChanged(AudioPlayerCallBack.State.PAUSED);
+            if (mediaPlayerCallBack != null) {
+                mediaPlayerCallBack.onStateChanged(MediaPlayerCallBack.State.PAUSED);
             }
 
             logToUI("playbackPause()");
@@ -208,8 +208,8 @@ public class AudioPlayerManager implements IAudioPlayer {
             mExecutor.shutdownNow();
             mExecutor = null;
             mSeekbarPositionUpdateTask = null;
-            if (resetUIPlaybackPosition && mAudioPlaybackListner != null) {
-                mAudioPlaybackListner.onPositionChanged(0);
+            if (resetUIPlaybackPosition && mediaPlayerCallBack != null) {
+                mediaPlayerCallBack.onPositionChanged(0);
             }
         }
     }
@@ -217,8 +217,8 @@ public class AudioPlayerManager implements IAudioPlayer {
     private void updateProgressCallbackTask() {
         if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
             int currentPosition = mMediaPlayer.getCurrentPosition();
-            if (mAudioPlaybackListner != null) {
-                mAudioPlaybackListner.onPositionChanged(currentPosition);
+            if (mediaPlayerCallBack != null) {
+                mediaPlayerCallBack.onPositionChanged(currentPosition);
             }
         }
     }
@@ -226,9 +226,9 @@ public class AudioPlayerManager implements IAudioPlayer {
     @Override
     public void initializeProgressCallback() {
         final int duration = mMediaPlayer.getDuration();
-        if (mAudioPlaybackListner != null) {
-            mAudioPlaybackListner.onDurationChanged(duration);
-            mAudioPlaybackListner.onPositionChanged(0);
+        if (mediaPlayerCallBack != null) {
+            mediaPlayerCallBack.onDurationChanged(duration);
+            mediaPlayerCallBack.onPositionChanged(0);
             logToUI(String.format("firing setPlaybackDuration(%d sec)",
                     TimeUnit.MILLISECONDS.toSeconds(duration)));
             logToUI("firing setPlaybackPosition(0)");
@@ -236,8 +236,8 @@ public class AudioPlayerManager implements IAudioPlayer {
     }
 
     private void logToUI(String message) {
-        if (mAudioPlaybackListner != null) {
-            mAudioPlaybackListner.onLogUpdated(message);
+        if (mediaPlayerCallBack != null) {
+            mediaPlayerCallBack.onLogUpdated(message);
         }
     }
 }
