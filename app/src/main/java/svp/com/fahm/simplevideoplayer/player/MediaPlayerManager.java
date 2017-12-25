@@ -24,13 +24,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import sap.com.fahm.simpleaudioplayer.MainActivity;
+
 
 /**
  * Created by Faheem on 20/12/17.
  */
 
-public class VideoPlayerManager implements IMediaPlayer {
+public class MediaPlayerManager implements IMediaPlayer {
 
     public static final int PLAYBACK_POSITION_REFRESH_INTERVAL_MS = 1000;
 
@@ -41,17 +41,10 @@ public class VideoPlayerManager implements IMediaPlayer {
     private ScheduledExecutorService mExecutor;
     private Runnable mSeekbarPositionUpdateTask;
 
-    public VideoPlayerManager(Context context) {
+    public MediaPlayerManager(Context context) {
         mContext = context.getApplicationContext();
     }
 
-    /**
-     * Once the {@link MediaPlayer} is released, it can't be used again, and another one has to be
-     * created. In the onStop() method of the {@link MainActivity} the {@link MediaPlayer} is
-     * released. Then in the onStart() of the {@link MainActivity} a new {@link MediaPlayer}
-     * object has to be created. That's why this method is private, and called by load(int) and
-     * not the constructor.
-     */
     private void initializeMediaPlayer() {
         if (mMediaPlayer == null) {
             mMediaPlayer = new MediaPlayer();

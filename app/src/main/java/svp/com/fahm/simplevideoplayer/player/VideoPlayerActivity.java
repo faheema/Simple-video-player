@@ -8,8 +8,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.io.IOException;
-
-import svp.com.fahm.simplevideoplayer.MainActivity;
 import svp.com.fahm.simplevideoplayer.R;
 
 public class VideoPlayerActivity extends AppCompatActivity {
@@ -37,7 +35,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
                         public void onPrepared(MediaPlayer mp) {
 
                         }
-                    };
+                    });
                     mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 } catch (IOException e) {
                     e.printStackTrace();
